@@ -1,0 +1,43 @@
+.bor_T {
+    position: relative;
+    &:after{
+        content: '';
+        display: block;
+        height: 1px;  
+        width: 100%;  
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        background-color: rgba(7,17,27,0.1);
+        border: 0 solid transparent;
+        // border-radius: 0px;
+        // -webkit-border-radius: 0px;
+        transform: scaleY(0.5); 
+        // -webkit-transform: scale(0.5);
+        // -moz-transform: scale(0.5);
+        // -ms-transform: scale(0.5);
+        // -o-transform: scale(0.5);
+        transform-origin: top left;  //定义缩放基点
+        // -webkit-transform-origin: top left;
+        // -moz-transform-origin: top left;
+        // -ms-transform-origin: top left;
+        // -o-transform-origin: top left;
+    }
+        
+}
+
+
+.clearfix {
+    display: inline-block;
+    &:after {
+        display: block;
+        content: '';
+        height: 0;
+        line-height: 0;
+        clear: both;
+        visibility: hidden;
+    }
+}
+
+
+  

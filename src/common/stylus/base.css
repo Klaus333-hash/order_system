@@ -1,0 +1,33 @@
+.bor_T {
+  position: relative;
+}
+
+.bor_T:after {
+  content: '';
+  display: block;
+  height: 1px;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background-color: rgba(7, 17, 27, 0.1);
+  border: 0 solid transparent;
+  -webkit-transform: scaleY(0.5);
+          transform: scaleY(0.5);
+  -webkit-transform-origin: top left;
+          transform-origin: top left;
+}
+
+.clearfix {
+  display: inline-block;
+}
+
+.clearfix:after {
+  display: block;
+  content: '';
+  height: 0;
+  line-height: 0;
+  clear: both;
+  visibility: hidden;
+}
+/*# sourceMappingURL=base.css.map */
