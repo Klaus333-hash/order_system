@@ -14,9 +14,7 @@
               <div class="control-item">
                 <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>
                 {{item.name}}
-                <!-- <span class="bor_T"></span> -->
               </div>
-              <!-- <div class="bor_T"></div> -->
             </span>
             <div class="bor_T" v-show="(i!==index && index > 0 && i!==index-1) | index == 0 && i!==index "></div>
           </div>
@@ -43,15 +41,15 @@
                     <span>月售{{food.sellCount}}份</span>
                     <span>好评率{{food.rating}}%</span>
                   </div>
-                  <div class="price">
+                  <div class="price" ref="price">
                     <div>
                       ￥<span class="new-price">{{food.price}}</span>
                     <del v-show="food.oldPrice">￥{{food.oldPrice}}</del>
                     </div>
                     <div class="numbers">
-                    <span class="decrease" @click="foodCount(food, 0, j, i)" v-show="food.count > 0">-</span>
-                    <p class="number" v-if="cart.find(v => v.name === food.name) && food.count > 0">{{food.count}}</p>
-                    <span class="increase" @click="foodCount(food, 1, j, i)">+</span>
+                      <span class="decrease iconfont icon-icon-" @click="foodCount(food, 0, j, i)" v-show="food.count > 0"></span>
+                      <p class="number" v-if="cart.find(v => v.name === food.name) && food.count > 0">{{food.count}}</p>
+                      <span class="increase iconfont icon-AddwithcircleF" @touchend="touchended" @click="foodCount(food, 1, j, i)"></span>
                     </div>
                   </div>
                 </div>
@@ -61,25 +59,29 @@
         </div>
       </div>
     </div>
-    <shoppingCart></shoppingCart>
+    <shoppingCart ref="shopCart" :count="counts"></shoppingCart>
   </div>
 </template>
 
 <script>
 import mui from "../../lib/mui/js/mui.min.js";
 import shoppingCart from '../cart/shopping_cart.vue'
+import cartBall from '../cartBall.vue'
 
 export default {
   data() {
     return {
       goods: {},
       index: 0,
-      cart: []
+      cart: [], 
+      ballLeft: '',
+      ballTop: '',
+      counts: 0,
+      price: ''
     };
   },
   watch: {
     index: function(newIndex) {
-      console.log(newIndex)
       this.scrollToR(newIndex)
     }
   },
@@ -130,12 +132,35 @@ export default {
         this.goods[i].foods[index].count --
         this.goods = this.goods.concat([])
       }
-      localStorage.setItem('cartList', JSON.stringify(this.cart))
+      localStorage.setItem('cartList', JSON.stringify(this.cart))  
+    },
+    touchended(e) {
+      // console.log(e)
+      // console.log(e.changedTouches[0])
+      // this.ball = true
+      this.ballLeft = Math.floor(e.changedTouches[0].clientX)-12 + 'px'
+      this.ballTop = Math.floor(e.changedTouches[0].clientY)-12 + 'px'
+      // this.$nextTick(() => {
+      //   this.$refs.ballCart.ballControl()
+      // })
+      // setTimeout(() => {
+      //   this.ball = false
+      // }, 2000);
+      this.$tool.creatEl(cartBall, {ballTop: this.ballTop, ballLeft: this.ballLeft})
+      // let getIcon = this.$refs.shopCart.getIcon()
     },
     initCount () {
       localStorage.getItem('cartList') && (this.cart = JSON.parse(localStorage.getItem('cartList')))
-      console.log(this.cart)
+      let count = []
       this.cart.map(v => {
+        this.counts = 0
+        if (v.count > 0) {
+          count.push(v.count)
+          count.forEach(h => {
+            this.counts += h
+            console.log(this.counts)
+        })
+      }
         this.goods.forEach(g => {
           g.foods.forEach(f => {
             if(f.name === v.name) {
@@ -169,7 +194,7 @@ export default {
       var currentElem = controlsElem.querySelector(
         ".mui-segmented-control:first-child"
       );
-      console.log(currentElem)
+      // console.log(currentElem)
       currentElem.children[0].classList.add("mui-active");
       let height = [];
       let items = controlsElem.querySelectorAll(".mui-control-item");
@@ -199,12 +224,11 @@ export default {
             } 
           }
         });
-        
     }, 500)
   },
-  props: ["seller"],
   components: {
-    shoppingCart
+    shoppingCart,
+    cartBall
   }
 };
 </script>
@@ -306,7 +330,6 @@ export default {
       li {
         .numbers {
           display: flex;
-          // position: absolute;
         }
         a {
           padding: 0 0 18px 0;
@@ -350,24 +373,15 @@ export default {
                     color: rgb(147, 153, 159);
                   }
                   span {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    // text-align: center;
-                    // padding: 0 !important;
-                    font-size: 24px;
-                    height: 24px;
-                    width: 24px;
-                    border-radius: 12px;;
-                    border: 1px solid rgb(0,160,220);
+                    margin-top: 2px;
+                    font-size: 22px;
                     &.decrease {
-                      padding-bottom: 3px;
                       color: rgb(0,160,220);
                     }
                     &.increase {
+                      font-size: 21px;
                       padding-top: 1px;
-                      color: #fff;
-                      background-color: rgb(0,160,220);
+                      color: rgb(0,160,220);
                     }
                   }
                 }
@@ -398,6 +412,7 @@ export default {
 .mui-active {
   background-color: white !important;
 }
+
 * {
   touch-action: none;
 }
