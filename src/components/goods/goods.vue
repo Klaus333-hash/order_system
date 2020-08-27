@@ -1,5 +1,5 @@
 <template>
-  <div class="goods-box">
+  <div class="goods-box" v-loading="visible">
     <div class="mui-scroll-wrapper left-control">
       <div class="mui-scroll">
         <div id="left-control">
@@ -59,7 +59,7 @@
         </div>
       </div>
     </div>
-    <shoppingCart ref="shopCart" :count="counts"></shoppingCart>
+    <shoppingCart ref="shopCart" :count.sync="counts"></shoppingCart>
   </div>
 </template>
 
@@ -77,7 +77,8 @@ export default {
       ballLeft: '',
       ballTop: '',
       counts: 0,
-      price: ''
+      price: '',
+      visible: true
     };
   },
   watch: {
@@ -88,6 +89,7 @@ export default {
   methods: {
     getGoods() {
       this.axios.get("/api/goods").then(res => {
+        this.visible = false
         res = res.data;
         if (res.errno === 0) {
           this.goods = res.data;
@@ -129,36 +131,32 @@ export default {
       } else if (type === 0) {
         _index = this.cart.findIndex(v => v.name === food.name)
         this.cart[_index].count --
+        this.cart[_index].count === 0 && (this.cart.splice(_index, 1))
         this.goods[i].foods[index].count --
         this.goods = this.goods.concat([])
       }
       localStorage.setItem('cartList', JSON.stringify(this.cart))  
+      this.initCount()
     },
     touchended(e) {
-      // console.log(e)
-      // console.log(e.changedTouches[0])
-      // this.ball = true
       this.ballLeft = Math.floor(e.changedTouches[0].clientX)-12 + 'px'
       this.ballTop = Math.floor(e.changedTouches[0].clientY)-12 + 'px'
-      // this.$nextTick(() => {
-      //   this.$refs.ballCart.ballControl()
-      // })
-      // setTimeout(() => {
-      //   this.ball = false
-      // }, 2000);
       this.$tool.creatEl(cartBall, {ballTop: this.ballTop, ballLeft: this.ballLeft})
-      // let getIcon = this.$refs.shopCart.getIcon()
+      const BALLS = document.getElementsByClassName('ball')
+      setTimeout(() => {
+        document.body.removeChild(BALLS[0])
+      }, 1000)
     },
     initCount () {
       localStorage.getItem('cartList') && (this.cart = JSON.parse(localStorage.getItem('cartList')))
       let count = []
+      if (!this.cart || !this.cart.length) this.counts = 0
       this.cart.map(v => {
         this.counts = 0
         if (v.count > 0) {
           count.push(v.count)
           count.forEach(h => {
             this.counts += h
-            console.log(this.counts)
         })
       }
         this.goods.forEach(g => {
@@ -194,7 +192,6 @@ export default {
       var currentElem = controlsElem.querySelector(
         ".mui-segmented-control:first-child"
       );
-      // console.log(currentElem)
       currentElem.children[0].classList.add("mui-active");
       let height = [];
       let items = controlsElem.querySelectorAll(".mui-control-item");

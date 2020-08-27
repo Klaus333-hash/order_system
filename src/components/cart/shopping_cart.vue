@@ -3,7 +3,7 @@
     <!-- <div class="trans"></div> -->
     <div class="icon">
       <div class="icon-shopping_cart" :class="'active'" ref="icon"></div>
-      <div class="counts">{{count}}</div>
+      <div class="counts">{{goodsCount}}</div>
     </div>
     <div class="box">
       <div class="price" :class="'price-act'">￥0</div>
@@ -16,8 +16,10 @@
 <script>
 export default {
   props: ['count'],
-  mounted() {
-    console.log(this.count)
+  computed: {
+    goodsCount() {
+      return this.count
+    }
   }
 }
 </script>
@@ -43,14 +45,14 @@ export default {
     .counts {
       position: absolute;
       width: 24px;
-      height: 16px;
+      height: 24px;
       border-radius: 12px;
       background-color: rgb(240, 20, 20);
       color: rgb(255, 255, 255);
       right: 0;
-      top: 0;
+      top: -5px;
       text-align: center;
-      line-height: 16px;
+      line-height: 24px;
       font-weight: 700;
       font-size: 9px;
       z-index: 2;

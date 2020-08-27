@@ -15,6 +15,7 @@
     <transition mode="in-out">
       <detailDialog v-show="showDetail" :seller="seller"></detailDialog>
     </transition>
+    <loading></loading>
   </div>
 </template>
 
@@ -22,7 +23,7 @@
 import header from "./components/header/header.vue";
 import detailDialog from "./components/dialog/detailDialog.vue";
 import { mapMutations } from "vuex";
-
+import loading from './components/loading/index.vue'
 export default {
   data() {
     return {
@@ -51,7 +52,8 @@ export default {
   mounted() {},
   components: {
     "v-header": header,
-    detailDialog
+    detailDialog,
+    loading
   }
 };
 </script>

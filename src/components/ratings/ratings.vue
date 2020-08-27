@@ -1,5 +1,5 @@
 <template>
-  <div class="des">
+  <div class="rating" v-loading="visible">
     <div class="start-content bor_T">
       <div class="complex">
         <div class="box">
@@ -61,7 +61,6 @@
         </ul>
       </div>
     </div>
-    <shoppingCart></shoppingCart>
   </div>
 </template>
 
@@ -76,11 +75,12 @@ export default {
       showUseful: false,
       ratingsNum: '',
       dissatisfiedNum: '',
-      satisfiedNum: ''
+      satisfiedNum: '',
+      visible: true
     }
   },
   created() {
-    
+    this.getRatings()
   },
   methods: {
     ...mapMutations([
@@ -88,6 +88,7 @@ export default {
     ]),
     getRatings(type = 2) {
       this.axios.get('/api/ratings').then((res) => {
+        this.visible = false
         res = res.data
         if (res.errno === 0) {
           this.ratingsNum = res.data.length
@@ -126,9 +127,6 @@ export default {
       return this.$store.state.ratings
     }
   },
-  mounted() {
-    this.getRatings()
-  },
   components: {
     star,
     shoppingCart
@@ -137,7 +135,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
+.rating {
+  position: relative;
+  height: calc(100vh - 175px);
+  overflow-y: scroll;
+}
 
 .start-content {
   display: flex;
@@ -214,6 +216,7 @@ export default {
 .comments-content {
   padding-top: 18px;
   padding-left: 18px;
+  position: relative;
   .all {
     padding-bottom: 18px;
     button {
@@ -250,8 +253,6 @@ export default {
     }
   }
   .comments {
-    height: 245px;
-    // padding-bottom: 46px;
     ul {
       padding-bottom: 46px;
       li {
@@ -343,9 +344,6 @@ export default {
       }
     }  
   }
-}
-.des {
-  overflow-y: scroll;
 }
 // * {
 //   touch-action: none;
