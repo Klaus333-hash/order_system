@@ -73,7 +73,6 @@ export default {
       font-size: 16px;
       font-weight: 700;
       margin-top: 64px;
-      /* padding-bottom: 64px; */
     }
     .star-wrapper {
       margin-top: 16px;

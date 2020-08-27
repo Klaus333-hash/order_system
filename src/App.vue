@@ -51,7 +51,7 @@ export default {
   mounted() {},
   components: {
     "v-header": header,
-    detailDialog
+    detailDialog,
   }
 };
 </script>

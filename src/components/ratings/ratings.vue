@@ -1,5 +1,5 @@
 <template>
-  <div class="des">
+  <div class="rating">
     <div class="start-content bor_T">
       <div class="complex">
         <div class="box">
@@ -344,7 +344,7 @@ export default {
     }  
   }
 }
-.des {
+.rating {
   overflow-y: scroll;
 }
 // * {

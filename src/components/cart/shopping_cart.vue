@@ -1,23 +1,35 @@
 <template>
+<div class="down" @click="choice=!choice">
   <div class="foot-cart">
-    <!-- <div class="trans"></div> -->
     <div class="icon">
-      <div class="icon-shopping_cart" :class="'active'" ref="icon"></div>
+      <div class="icon-shopping_cart" :class="[count > 0 ? 'active' : '']" ref="icon"></div>
       <div class="counts">{{count}}</div>
     </div>
     <div class="box">
-      <div class="price" :class="'price-act'">￥0</div>
+      <!-- <div class="price" :class="{price-act: act}">￥0</div> -->
+      <div class="price" :class="[count > 0 ? 'price-act' : '']">￥{{price}}</div>
       <div class="deliver">另需配送费￥4元</div>
       <div class="standard">￥20起送</div>
     </div>
   </div>
+  <userCart v-show="choice"></userCart>
+</div> 
 </template>
 
 <script>
+import userCart from './user_cart.vue'
 export default {
-  props: ['count'],
+  data () {
+    return {
+      act :false,
+      choice:false
+    }
+  },
+  props: ['count','price'],
   mounted() {
-    console.log(this.count)
+  },
+  components: {
+    userCart
   }
 }
 </script>
@@ -28,7 +40,7 @@ export default {
   height: 58px;
   width: 100%;
   bottom: 0;
-  z-index: 3;
+  z-index: 100;
   .icon{
     position: absolute;
     display: flex;
@@ -40,6 +52,10 @@ export default {
     border-radius: 50%;
     top: 3px;
     left: 15px;
+    &.active {
+      background-color: rgb(0, 160, 220);
+      color: rgb(255, 255, 255);
+    }
     .counts {
       position: absolute;
       width: 24px;
@@ -83,6 +99,9 @@ export default {
     font-size: 16px;
     padding-top: 12px;
     margin-left: 76px;
+    .price-act {
+      color: rgb(255, 255, 255);
+    }
     &::after {
       content: '';
       height: 60%;

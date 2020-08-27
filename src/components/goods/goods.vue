@@ -59,7 +59,7 @@
         </div>
       </div>
     </div>
-    <shoppingCart ref="shopCart" :count="counts"></shoppingCart>
+    <shoppingCart ref="shopCart" :count="counts" :price="price"></shoppingCart>
   </div>
 </template>
 
@@ -67,7 +67,6 @@
 import mui from "../../lib/mui/js/mui.min.js";
 import shoppingCart from '../cart/shopping_cart.vue'
 import cartBall from '../cartBall.vue'
-
 export default {
   data() {
     return {
@@ -77,7 +76,7 @@ export default {
       ballLeft: '',
       ballTop: '',
       counts: 0,
-      price: ''
+      price: 0
     };
   },
   watch: {
@@ -132,7 +131,8 @@ export default {
         this.goods[i].foods[index].count --
         this.goods = this.goods.concat([])
       }
-      localStorage.setItem('cartList', JSON.stringify(this.cart))  
+      localStorage.setItem('cartList', JSON.stringify(this.cart))
+      this.initCount()  
     },
     touchended(e) {
       // console.log(e)
@@ -155,6 +155,7 @@ export default {
       this.cart.map(v => {
         this.counts = 0
         if (v.count > 0) {
+          this.price += v.count * v.price
           count.push(v.count)
           count.forEach(h => {
             this.counts += h
