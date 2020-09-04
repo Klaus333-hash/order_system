@@ -27,10 +27,10 @@
     </div>
     <div class="bor_T trans"></div>
     <div class="comments-content">
-      <div class="all bor_T">
-        <button class="total" @click="satisfied(2)">全部 {{ratingsNum}}</button>
-        <button class="satisfied" @click="satisfied(1)">满意 {{satisfiedNum}}</button>
-        <button class="dissatisfied" @click="satisfied(0)">不满意 {{dissatisfiedNum}}</button>
+      <div class="all bor_T" id="btn">
+        <button class="total" :class="[type==2 ? 'now' : '']"   @click="satisfied(2)">全部 {{ratingsNum}}</button>
+        <button class="satisfied" :class="[type==1 ? 'now' : '']" @click="satisfied(1)">满意 {{satisfiedNum}}</button>
+        <button class="dissatisfied" :class="[type==0 ? 'now' : '']" @click="satisfied(0)">不满意 {{dissatisfiedNum}}</button>
       </div>
       <div class="has-content bor_T">
         <span class="icon-check_circle" :class="{'old-icon': showUseful}" @click="check_content" ref="iconCheck"></span>
@@ -76,17 +76,22 @@ export default {
       ratingsNum: '',
       dissatisfiedNum: '',
       satisfiedNum: '',
-      visible: true
+      visible: true,
+      type: 0
     }
   },
   created() {
     this.getRatings()
+  },
+  mounted () {
+    // this.getActive(2)
   },
   methods: {
     ...mapMutations([
        'setRatings'
     ]),
     getRatings(type = 2) {
+      this.type = type
       this.axios.get('/api/ratings').then((res) => {
         this.visible = false
         res = res.data
@@ -101,7 +106,7 @@ export default {
           else if (type === 1) {
             this.$store.commit('setRatings', res.data.filter(v => v.rateType === 0))
           }
-        }
+        } 
       })
     },
     check_content() {
@@ -223,7 +228,7 @@ export default {
       border: 0;
     }
     .total {
-      color: #fff;
+      color: #666;
       background-color: rgb(67, 174, 236);
     }
     .satisfied {
@@ -233,6 +238,9 @@ export default {
     .dissatisfied {
       color: #666;
       background-color: rgb(238, 236, 236);
+    }
+    .now {
+      color: #fff !important;
     }
   }
   .has-content {

@@ -1,18 +1,17 @@
 <template>
-<div class="down" @click="choice=!choice">
-  <div class="foot-cart">
+<div class="down">
+  <div class="foot-cart" @click="choice=!choice">
     <div class="icon">
-      <div class="icon-shopping_cart" :class="[count > 0 ? 'active' : '']" ref="icon"></div>
-      <div class="counts">{{count}}</div>
+      <div class="icon-shopping_cart" :class="[counts > 0 ? 'active' : '']" ref="icon"></div>
+      <div class="counts">{{counts}}</div>
     </div>
     <div class="box">
-      <!-- <div class="price" :class="{price-act: act}">￥0</div> -->
-      <div class="price" :class="[count > 0 ? 'price-act' : '']">￥{{price}}</div>
-      <div class="deliver">另需配送费￥4元</div>
-      <div class="standard">￥20起送</div>
+      <div class="price" :class="[counts > 0 ? 'price-act' : '']">￥{{prices}}</div>
+      <div class="deliver">另需配送费￥{{seller.deliveryPrice}}元</div>
+      <div class="standard" ref="standard" :class="[prices >= 20 ? 'enough' : '']">￥{{seller.minPrice}}起送</div>
     </div>
   </div>
-  <userCart v-show="choice"></userCart>
+  <userCart v-show="choice" :choice="choice"></userCart>
 </div> 
 </template>
 
@@ -21,12 +20,59 @@ import userCart from './user_cart.vue'
 export default {
   data () {
     return {
-      act :false,
-      choice:false
+      choice: false,
     }
   },
-  props: ['count','price'],
-  mounted() {
+  watch : {
+    // price: function (val) {
+    //   this.getPrice(val)
+    // },
+    cart: function (val) {
+      this.getCount(val)
+    },
+    prices: function (val) {
+      this.judgePrice(val)
+    }
+  },
+  methods : {
+    judgePrice (prices) {
+      // let prices = this.prices
+      // console.log(prices)
+      if (prices >= 20) {
+      this.$refs.standard.innerText = '去结算'
+    } else if (prices > 0 && prices < 20) {
+      this.$refs.standard.innerText = `还差￥${20-prices}起送`
+    } else {
+      this.$refs.standard.innerText = '￥20起送'
+    }
+    },
+    getCount () {
+      if (this.cart.length === 0) this.choice = false
+    },
+    // getPrice () {
+    //   this.prices = 0
+    //   // console.log(this.cart)
+    //   this.cart.map(v => {
+    //       this.prices += (v.count * v.price)
+    //   })
+    // }
+  },
+
+  computed: {
+     counts () {
+       return this.$store.state.counts
+     },
+     prices () {
+       return this.$store.state.price
+     },
+     cart () {
+       return this.$store.state.cart
+     },
+     seller () {
+       return this.$store.state.seller
+     }
+   },
+  mounted () {
   },
   components: {
     userCart
@@ -52,8 +98,8 @@ export default {
     border-radius: 50%;
     top: 3px;
     left: 15px;
-    &.active {
-      background-color: rgb(0, 160, 220);
+    .active {
+      background-color: rgb(0, 160, 220) !important;
       color: rgb(255, 255, 255);
     }
     .counts {
@@ -99,7 +145,7 @@ export default {
     font-size: 16px;
     padding-top: 12px;
     margin-left: 76px;
-    .price-act {
+    &.price-act {
       color: rgb(255, 255, 255);
     }
     &::after {
@@ -123,6 +169,10 @@ export default {
     font-size: 12px;
     padding-top: 12px;
     background-color: rgba(255, 255, 255, 0.2);
+    &.enough {
+      background-color: rgb(0, 160, 220);
+      color: rgb(255, 255, 255);
+    }
   }
   .deliver {
     padding-top: 12px;

@@ -47,7 +47,7 @@
                     <del v-show="food.oldPrice">￥{{food.oldPrice}}</del>
                     </div>
                     <div class="numbers">
-                      <span class="decrease iconfont icon-icon-" @click="foodCount(food, 0, j, i)" v-show="food.count > 0"></span>
+                      <span class="decrease iconfont icon-icon-" @click="foodCount(food, 0, j, i)" v-show="cart.find(v => v.name === food.name) && food.count > 0"></span>
                       <p class="number" v-if="cart.find(v => v.name === food.name) && food.count > 0">{{food.count}}</p>
                       <span class="increase iconfont icon-AddwithcircleF" @touchend="touchended" @click="foodCount(food, 1, j, i)"></span>
                     </div>
@@ -59,12 +59,13 @@
         </div>
       </div>
     </div>
-    <shoppingCart ref="shopCart" :count="counts" :price="price"></shoppingCart>
+    <shoppingCart ref="shopCart" :price="price"></shoppingCart>
   </div>
 </template>
 
 <script>
 import mui from "../../lib/mui/js/mui.min.js";
+import { mapMutations } from 'vuex'
 import shoppingCart from '../cart/shopping_cart.vue'
 import cartBall from '../cartBall.vue'
 export default {
@@ -72,10 +73,10 @@ export default {
     return {
       goods: {},
       index: 0,
-      cart: [], 
+      // cart: [], 
       ballLeft: '',
       ballTop: '',
-      counts: 0,
+      // counts: 0,
       price: 0,
       visible: true
     };
@@ -86,6 +87,10 @@ export default {
     }
   },
   methods: {
+     ...mapMutations([
+       'setCart',
+       'setCounts'
+     ]),
     getGoods() {
       this.axios.get("/api/goods").then(res => {
         this.visible = false
@@ -134,7 +139,8 @@ export default {
         this.goods[i].foods[index].count --
         this.goods = this.goods.concat([])
       }
-      localStorage.setItem('cartList', JSON.stringify(this.cart))
+      // localStorage.setItem('cartList', JSON.stringify(this.cart))
+      this.$store.commit('setCart', this.cart)
       this.initCount()  
     },
     touchended(e) {
@@ -147,13 +153,14 @@ export default {
       }, 1000)
     },
     initCount () {
-      localStorage.getItem('cartList') && (this.cart = JSON.parse(localStorage.getItem('cartList')))
+      // localStorage.getItem('cartList') && (this.cart = JSON.parse(localStorage.getItem('cartList')))
       let count = []
       if (!this.cart || !this.cart.length) this.counts = 0
+      this.price = 0
       this.cart.map(v => {
         this.counts = 0
         if (v.count > 0) {
-          this.price += v.count * v.price
+          this.price += (v.count * v.price)
           count.push(v.count)
           count.forEach(h => {
             this.counts += h
@@ -168,6 +175,8 @@ export default {
           })
         })
       })
+      this.$store.commit('setCounts', this.counts)
+      this.$store.commit('setPrice', this.price)
     }
   },
   created() {
@@ -179,6 +188,8 @@ export default {
       "guanrantee"
     ])
     this.getGoods()
+    // this.foodCount()
+    // this.initCount()
   },
   mounted() {
     mui(".mui-scroll-wrapper").scroll({
@@ -222,6 +233,11 @@ export default {
           }
         });
     }, 500)
+  },
+  computed: {
+    cart () {
+      return this.$store.state.cart
+    }
   },
   components: {
     shoppingCart,

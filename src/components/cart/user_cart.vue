@@ -3,17 +3,17 @@
     <div class="cart">
       <div class="top">
         <span class="title">购物车</span>
-        <span class="clean">清空</span>
+        <span class="clean" @click="clean">清空</span>
       </div>
       <ul>
-        <li class="bor_T">
-          <div class="food">粥</div>
+        <li class="bor_T" v-for="(item, i) in cart" :key="item.name">
+          <div class="food">{{cart[i].name}}</div>
           <div class="choose">
             <span class="price-icon">￥</span>
-            <span class="price">10</span>
-            <span class="decrease iconfont icon-icon-"></span>
-            <span class="count">1</span>
-            <span class="increase iconfont icon-AddwithcircleF"></span>
+            <span class="price">{{cart[i].price}}</span>
+            <span class="decrease iconfont icon-icon-" @click="food(0, i)"></span>
+            <span class="count">{{cart[i].count}}</span>
+            <span class="increase iconfont icon-AddwithcircleF" @click="food(1, i)"></span>
           </div>
         </li>
       </ul>
@@ -23,8 +23,51 @@
 
 <script>
 export default {
-  data() {
-    return {};
+  data () {
+    return {
+    };
+  },
+  watch : {
+    cart: function (val) {
+      this.food()
+    }
+  },
+  // props: ['cart'],
+  methods: {
+    food (type, i) {
+      // localStorage.getItem('cartList', this.cart)
+      // console.log(this.cart)
+      if (type === 0 && this.cart[i].count > 0) {
+        this.cart[i].count--
+        this.$store.state.counts--
+        this.cart[i].count === 0 && this.cart.splice(i, 1)
+      } else if (type === 1) {
+        this.cart[i].count++
+        this.$store.state.counts++
+      }
+      // console.log(this.cart)
+      this.$store.commit('setCart', this.cart)
+      this.$parent.$parent.initCount()
+      // this.$parent.getPrice()
+      // localStorage.setItem('cartList', JSON.stringify(this.cart))
+    },
+    clean () {
+      this.$store.state.cart = []
+      this.$store.state.counts = 0
+    }
+  },
+  mounted () {    
+  },
+  computed: {
+     counts () {
+       return this.$store.state.counts
+     },
+     price () {
+       return this.$store.state.price
+     },
+     cart () {
+       return this.$store.state.cart
+     }
   }
 };
 </script>

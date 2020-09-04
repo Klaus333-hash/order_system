@@ -5,7 +5,10 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     seller: '',
-    ratings: ''
+    ratings: '',
+    counts: 0,
+    price: 0,
+    cart: []
   },
   mutations: {
     setSeller (state, data) {
@@ -13,6 +16,15 @@ const store = new Vuex.Store({
     },
     setRatings (state, data) {
       state.ratings = data
+    },
+    setCounts (state, data) {
+      state.counts = data
+    },
+    setPrice (state, data) {
+      state.price = data
+    },
+    setCart (state, data) {
+      state.cart = data
     }
   }
 })

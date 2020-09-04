@@ -1,6 +1,6 @@
 <template>
   <div class="header">
-    <li class="mui-table-view-cell mui-media">
+    <li class="mui-table-view-cell mui-media" style="pointer-events:none;">
       <img class="mui-media-object mui-pull-left" :src="seller.avatar">
       <div class="mui-media-body">
         <span class="brand"></span>
@@ -11,11 +11,15 @@
           <span class="icon" :class="classMap[seller.supports[0].type]"></span>
           <span class="text">{{seller.supports[0].description}}</span>
         </div>
-        <div  v-if="seller.supports" class="support-count" @click="detailShow">
+        <!-- <div  v-if="seller.supports" class="support-count" @click="detailShow">
          <span class="count" >{{seller.supports.length}}个</span>
          <i class="icon-keyboard_arrow_right" ></i>
-        </div>
+        </div> -->
     </li>
+    <div  v-if="seller.supports" class="support-count" @click="detailShow">
+      <span class="count" >{{seller.supports.length}}个</span>
+      <i class="icon-keyboard_arrow_right" ></i>
+    </div>
     <div class="bot-bulletin">
       <span class="bulletin"></span><span class="bottom-bulletin">{{seller.bulletin}}</span>
       <i class="icon-keyboard_arrow_right"></i>
@@ -36,6 +40,8 @@
     methods: {
       detailShow () {
         this.$emit('showDialog')
+        // console.log(this.$refs.active.classList)
+        // this.$refs.active.classList.remove('mui-active')
       }
     },
     created() {
@@ -126,15 +132,17 @@
           }
         }
       }
-      .support-count {
+    }
+    .support-count {
         position: absolute;
         right: 12px;
-        bottom: 14px;
+        bottom: 42px;
         padding: 0 8px;
         line-height: 24px;
         height: 24px;
         border-radius: 14px;
         background-color: rgba(0,0,0,0.2);
+        font-size: 0;
         .count {
           vertical-align: top;
           font-size: 10px;
@@ -145,7 +153,6 @@
           font-size: 10px;
         }
       }
-    }
     .bot-bulletin {
       position: relative;
       line-height: 28px;

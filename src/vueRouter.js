@@ -7,6 +7,7 @@ import seller from './components/seller/seller.vue'
 
 var router = new VueRouter({
     routes: [
+        {path: '/', component: goods},
         {path: '/goods', component: goods},
         {path: '/header', component: header},
         {path: '/ratings', component: ratings},
